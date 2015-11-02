@@ -6,7 +6,7 @@ lena = im2double(lena);
 SPN = salt_pepper_noise(lena, 0.05);
 C = median_filter(SPN, 3);
 figure('Name', '1.a salt-pepper noise and median filter');
-imshowpair(SPN,SPN2,'montage')
+imshowpair(SPN,C,'montage')
 
 GN = gaussian_noise(lena, 0.02, 0);
 Gaussian2D = gaussian_kernel([9,9], 3);
