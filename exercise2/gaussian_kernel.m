@@ -12,5 +12,6 @@ function K = gaussian_kernel(dim, sigma)
     % normalize
     
     K = K ./ sum(sum(K));
-    
+    %flipping the mask
+    K = rot90(K,2);
 end

@@ -23,7 +23,6 @@ function cnvImg = convolution(img, H, borderTreatment)
     end
     
     % convolution operation
-    % TODO do we need to invert mask?
     for i = 1 : imgHeight
         for j = 1 : imgWidth
             for h_i = 1 : sizeH(1)
