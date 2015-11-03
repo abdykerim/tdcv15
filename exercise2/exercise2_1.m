@@ -1,7 +1,6 @@
 lena = imread('lena.gif');
 lena = im2double(lena);
-%figure('Name', '1.a salt-pepper noise and median filter');
-%imshowpair(SPN,MM,'montage')
+
 figure('Name', 'Exercise 1');
 subplot(3,3,1);
 imshow(lena);
