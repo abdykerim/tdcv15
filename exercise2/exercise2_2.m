@@ -1,3 +1,4 @@
+
 close all;
 lena = imread('lena.gif');
 lena = im2double(lena);
