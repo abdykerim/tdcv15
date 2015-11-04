@@ -2,8 +2,11 @@ function out = gaussian_filter(im, dim, sigma)
 
     ratio_x = floor(dim(1)/2) - (1 - mod(dim(1),2));   
     ratio_y = floor(dim(2)/2) - (1 - mod(dim(2),2));
-    
-    [X,Y] = meshgrid(-ratio_x : ratio_x , -ratio_y : ratio_y);
+    if ratio_x == floor(dim(1)/2)
+        [X,Y] = meshgrid(-ratio_x : ratio_x , -ratio_y : ratio_y);
+    else
+        [X,Y] = meshgrid(-ratio_x : ratio_x+1 , -ratio_y : ratio_y+1);
+    end
     
     % build gaussian filter
     G = exp(-(X.^2+Y.^2)/(2*sigma^2));
