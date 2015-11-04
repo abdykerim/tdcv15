@@ -2,19 +2,7 @@ close all;
 lena = imread('lena.gif');
 lena = im2double(lena);
 
-% GN = gaussian_noise(lena, 0.05, 0);
-% figure('Name', 'Exercise 1');
-% subplot(1,3,1);
-% imshow(GN), title('noise');
-% g = bilateral_filter(GN, 10, 0.5);
-% subplot(1,3,2);
-% imshow(g), title('bilateral filter');
-% 
-% g2 = gaussian_filter(GN, [30, 30], 10);
-% subplot(1,3,3);
-% imshow(g2), title('gaussian filter');
 
-% 
 figure('Name', 'Exercise 2');
 subplot(3,3,2);
 imshow(lena);
