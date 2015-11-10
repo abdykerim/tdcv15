@@ -12,7 +12,7 @@ function R = multiscale_harris( inputImg, sigma_i, gaussianSize, threshold)
     
     Gd = fspecial('gaussian', round(3 * sigma_d), sigma_d);
     Gi = fspecial('gaussian', round(gaussianSize * sigma_i), sigma_i);
-    Gi_norm = (sigma_d^2) * Gi;
+    Gi_norm = (sigma_d^2) * Gi; % 
 
     % compute autocorrelation matrix
     
@@ -31,16 +31,16 @@ function R = multiscale_harris( inputImg, sigma_i, gaussianSize, threshold)
     Lxy_g = conv2(Lxy, Gi_norm, 'same');
 
     build_L = @ (h, i, j, k) [h, i; j, k];
-    M = arrayfun(build_L, L2x_g, Lxy_g, L2y_g, Lxy_g,'un',0);
+    M = arrayfun(build_L, L2x_g, Lxy_g, Lxy_g, L2y_g,'un',0);
     
     % Apply Harris operator
-
     
-    harris = @(M) det(cell2mat(M)) - alpha * trace(cell2mat(M))^2;
+    harris = @(M) det(M{1}) - alpha * trace(M{1})^2;
     
     R = arrayfun(harris, M);
     R(R<threshold) = 0;
     R(~imregionalmax(R)) = 0;
+    R(R~=0) = 1;
     
 end
 

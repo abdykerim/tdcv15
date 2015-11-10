@@ -1,4 +1,4 @@
-function R = laplacian( inputImage, sigma )
+function R = laplacian( inputImage, sigma, threshold )
 
      % filters
 
@@ -13,6 +13,9 @@ function R = laplacian( inputImage, sigma )
     Lyy = conv2(inputImage, DoGyy, 'same');
     
     R = abs(sigma^2 * (Lxx + Lyy));
+    R(R<threshold) = 0;
+%     R(~imregionalmax(R)) = 0;
+%     R(R~=0) = 1;
 
 end
 

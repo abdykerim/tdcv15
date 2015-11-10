@@ -1,22 +1,25 @@
 close all
 
-% [tunnel, map, alpha] = imread('checkerboard_tunnel.png', 'png');
-% I = im2double(tunnel);
-[testImg, map, alpha] = imread('sample2.jpg', 'jpg');
-I = rgb2gray(im2double(testImg));
+[tunnel, map, alpha] = imread('checkerboard_tunnel.png', 'png');
+I = im2double(tunnel);
+% [testImg, map, alpha] = imread('sample2.jpg', 'jpg');
+% I = rgb2gray(im2double(testImg));
 
-% params
+% param
 
 sigma_d = 1;
-sigma_i = 1;
+sigma_i = 2;
 G_si_size = 9;
-threshold = 0.005;
+threshold = 0.00005;
 
-harris_laplace(I, 4, 2, G_si_size, threshold);
+% R = harris_laplace(I, 7, 2, G_si_size, threshold);
+% [r,c] = ind2sub(size(I), R);
 
-% [r,c] = find(vec2mat(R, size(I, 2)));  % Find row,col coords.	
-% figure, imagesc(I), axis image, colormap(gray), hold on
-% plot(c,r,'rs'), title('corners detected');
+R = multiscale_harris(I, sigma_i, G_si_size, threshold);
+[r,c] = find(vec2mat(R, size(I, 2)));  % Find row,col coords.	
+
+figure, imagesc(I), axis image, colormap(gray), hold on
+plot(c,r,'rs'), title('corners detected');
 
 
 
