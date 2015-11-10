@@ -25,29 +25,5 @@ function R = harris_laplace( inputImage, scale_level, sigma_0, gSize, t )
     
     R = feature_points(laplacianMaxs);
     
-    
-    
-%     laplacian_selection = @ (H, L) cell2mat(H) & cell2mat(L);
-%     selected_points = arrayfun(laplacian_selection, L_harris, L_laplacian, 'un',0);
-    
-                
-%     figure('Name', 'Laplacians');
-%     for i = 1:size(L_laplacian,2)
-%         subplot(2,size(L_laplacian,2) / 2,i);
-%         imshow(cell2mat(L_laplacian(i)));
-%     end    
-%     
-%     figure('Name', 'Harris');
-%     for i = 1:size(L_harris,2)
-%         subplot(2,size(L_harris,2) / 2,i);
-%         imshow(100*cell2mat(L_harris(i)));        
-%     end  
-%     
-%     figure('Name', 'Harris-Laplacian');
-%     for i = 1:size(L_harris,2)
-%         subplot(2,size(selected_points,2) / 2,i);
-%         imshow(100*cell2mat(selected_points(i)));        
-%     end
-    
 end
 

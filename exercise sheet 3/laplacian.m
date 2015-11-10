@@ -14,8 +14,6 @@ function R = laplacian( inputImage, sigma, threshold )
     
     R = abs(sigma^2 * (Lxx + Lyy));
     R(R<threshold) = 0;
-%     R(~imregionalmax(R)) = 0;
-%     R(R~=0) = 1;
 
 end
 
