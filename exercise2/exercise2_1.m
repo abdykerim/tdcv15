@@ -16,7 +16,7 @@ subplot(3,3,7);
 imshow(MO);
 title('median filter on original');
 
-SPN = salt_pepper_noise(lena, 0.02);
+SPN = salt_pepper_noise(lena, 0.75);
 subplot(3,3,2);
 imshow(SPN);
 title('salt and pepper noise');
@@ -26,12 +26,12 @@ subplot(3,3,5);
 imshow(GS);
 title('gaussian filter on salt and pepper');
 
-MS = median_filter(SPN, 3);
+MS = median_filter(SPN, 10);
 subplot(3,3,8);
 imshow(MS);
 title('median filter on salt and pepper');
 
-GN = gaussian_noise(lena, 0.01, 0);
+GN = gaussian_noise(lena, 3, 0);
 subplot(3,3,3);
 imshow(GN);
 title('gassian noise');

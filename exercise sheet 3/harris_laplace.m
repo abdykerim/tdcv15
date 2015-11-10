@@ -1,10 +1,8 @@
-function R = harris_laplace( inputImage, scale_level, sigma_0, gSize, t )
-                            
-    k = 1.4; % suggested step size
-    
+function R = harris_laplace( inputImage, scale_level, sigma_0, k, gSize, t )
+                         
     % Create scale space
     
-    s_i_params = arrayfun( @ (i) sigma_0 * k^i, 1:scale_level );
+    s_i_params = arrayfun( @ (i) sigma_0 * k^i, 0:scale_level );
     
     % Apply Harris to each scale level
         
@@ -21,7 +19,7 @@ function R = harris_laplace( inputImage, scale_level, sigma_0, gSize, t )
         , feature_points, 'un',0);
     
     laplacianMaxs = cell2mat(arrayfun(@ (data) ...
-        ~isempty(findpeaks(data{1})), l_values, 'un',0));
+        ~isempty( findpeaks(data{1})), l_values, 'un',0));
     
     R = feature_points(laplacianMaxs);
     

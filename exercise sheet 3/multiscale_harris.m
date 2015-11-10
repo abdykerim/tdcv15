@@ -43,4 +43,3 @@ function R = multiscale_harris( inputImg, sigma_i, gaussianSize, threshold)
     R(R~=0) = 1;
     
 end
-
