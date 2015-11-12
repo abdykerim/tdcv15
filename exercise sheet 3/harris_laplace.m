@@ -41,8 +41,6 @@ function R = harris_laplace( inputImage, scale_level, sigma_0, k, t_h, t_l )
     else
         R = feature_points{1};
     end
-    
-    
 end
 
 
