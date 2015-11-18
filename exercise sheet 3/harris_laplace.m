@@ -30,7 +30,7 @@ function R = harris_laplace( inputImage, scale_level, sigma_0, k, t_h, t_l )
 
                 maxim = arrayfun(@ (lap) max(max(lap{1})), L_laplacian);
                 max_3d = max(maxim);
-
+                
                 if(current_value == max_3d)
                     if(current_value > t_l)
                         R(end+1) = feature_points{n}(i);
