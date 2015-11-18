@@ -11,15 +11,8 @@ function R = laplacian( inputImage, sigma)
     
     Lxx = conv2(inputImage, DoGxx, 'same');
     Lyy = conv2(inputImage, DoGyy, 'same');
-    
-%     I = imgaussfilt(inputImage,sigma);
-%     [Lx, Ly] = imgradientxy(I);
-%     [Lxx, Lyx] = imgradientxy(Lx);
-%     [Lxy, Lyy] = imgradientxy(Ly);
-    
+
     R = abs(sigma^2 * (Lxx + Lyy));
-    
-%     figure;
-%     imshow(R);
+
 end
 
