@@ -1,4 +1,4 @@
-Ia_orig = imread('test_shell1.jpg') ;
+Ia_orig = imread('test_pot1.jpg') ;
 Ia = im2single(rgb2gray(Ia_orig)) ;
 [fa,da] = vl_sift(Ia) ; 
 %[fa,da] = vl_sift(Ia, 'PeakThresh', 0.0001) ;
@@ -12,7 +12,7 @@ Ia = im2single(rgb2gray(Ia_orig)) ;
 % h3 = vl_plotsiftdescriptor(da(:,sel),fa(:,sel)) ;
 % set(h3,'color','g') ;
 
-Ib_orig = imread('shell.jpg') ;
+Ib_orig = imread('pot.jpg') ;
 Ib = im2single(rgb2gray(Ib_orig)) ;
 [fb,db] = vl_sift(Ib) ;
 %[fb,db] = vl_sift(Ib, 'PeakThresh', 0.0001) ;
@@ -23,7 +23,7 @@ Ib = im2single(rgb2gray(Ib_orig)) ;
 % set(h12,'color','k','linewidth',3) ;
 % set(h22,'color','y','linewidth',2) ;
 
-[matches, scores] = vl_ubcmatch(da, db, 6.9); % 6.9
+[matches, scores] = vl_ubcmatch(da, db, 2.5); % 6.9
 
 % [drop, perm] = sort(scores, 'descend') ;
 % matches = matches(:, perm) ;

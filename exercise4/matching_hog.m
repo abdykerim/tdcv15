@@ -10,7 +10,7 @@ scene = imresize(scene,1/4);
 scene = im2single(scene) ;
 hog = vl_hog(scene, hogCellSize) ;
 
-scale = 1;
+scale = 3;
 max_old=0;
 
 for i = 1:scale
