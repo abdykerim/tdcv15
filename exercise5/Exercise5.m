@@ -98,45 +98,89 @@ leaf_node_reached = true;
 heat_map = zeros(imWidth, imHeight);
 for x = 1:imWidth
     for y = 1:imHeight
-        %result(x,y) = R(getIndexInIntegral(x), getIndexInIntegral(y))
         sum_px = 0;
         sum_py = 0;
         for tree = 1:10
             %trying to find leaf node
             cur_node_id = 0;
+            cur_leaf_node = -1;
             while (cur_node_id > -1)
-                %next_node_id = -1;     
-                b_0 = integralImg(getIndexInIntegral(x) + x_0{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1))...
-                    - integralImg(getIndexInIntegral(x)+x_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1))...
-                    - integralImg(getIndexInIntegral(x)+x_0{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1))...
-                    + integralImg(getIndexInIntegral(x)+x_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1));
-
-                b_1 = integralImg(getIndexInIntegral(x) + x_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1))...
-                    - integralImg(getIndexInIntegral(x)+x_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1))...
-                    - integralImg(getIndexInIntegral(x)+x_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1))...
-                    + integralImg(getIndexInIntegral(x)+x_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
-                    getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1));
+                 %                     - integralImg(getIndexInIntegral(x)+x_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1))...
+                %                     - integralImg(getIndexInIntegral(x)+x_0{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1))...
+                %                     + integralImg(getIndexInIntegral(x)+x_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_0{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_0{tree}(cur_node_id + 1));
                 
-                if b_0 - b_1 < t
-                    cur_node_id = c_l{tree}(cur_node_id + 1);
-                else cur_node_id = c_r{tree}(cur_node_id + 1);
+                %                 b_0 = compute_b( x, y, x_0{tree}(cur_node_id + 1), y_0{tree}(cur_node_id + 1),...
+                %                     z_0{tree}(cur_node_id + 1), s{tree}(cur_node_id + 1), integralImg);
+                
+                %computing b_0
+                index_x_0 = getIndexInIntegral(x) + x_0{tree}(cur_node_id + 1);
+                index_y_0 = getIndexInIntegral(y) + y_0{tree}(cur_node_id + 1);
+                cur_s = s{tree}(cur_node_id + 1);
+                cur_z_0 = z_0{tree}(cur_node_id + 1);
+                if  ((index_x_0 - cur_s) < 1) || ((index_y_0 - cur_s) < 1) ||...
+                        ((index_x_0 + cur_s) > size(integralImg,1)) || ((index_y_0 + cur_s) > size(integralImg,2))
+                    b_0 = 0;
+                else
+                    b_0 = integralImg(index_x_0 + cur_s, index_y_0 + cur_s, cur_z_0)...
+                        - integralImg(index_x_0 - cur_s, index_y_0 + cur_s, cur_z_0)...
+                        - integralImg(index_x_0 + cur_s, index_y_0 - cur_s, cur_z_0)...
+                        + integralImg(index_x_0 - cur_s, index_y_0 - cur_s, cur_z_0);
+                end
+                
+                %computing b_1
+                index_x_1 = getIndexInIntegral(x) + x_1{tree}(cur_node_id + 1);
+                index_y_1 = getIndexInIntegral(y) + y_1{tree}(cur_node_id + 1);
+                %cur_s = s{tree}(cur_node_id + 1);
+                cur_z_1 = z_0{tree}(cur_node_id + 1);
+                if  ((index_x_1 - cur_s) < 1) || ((index_y_1 - cur_s) < 1) ||...
+                        ((index_x_1 + cur_s) > size(integralImg,1)) || ((index_y_1 + cur_s) > size(integralImg,2))
+                    b_1 = 0;
+                else
+                    b_1 = integralImg(index_x_1 + cur_s, index_y_1 + cur_s, cur_z_0)...
+                        - integralImg(index_x_1 - cur_s, index_y_1 + cur_s, cur_z_0)...
+                        - integralImg(index_x_1 + cur_s, index_y_1 - cur_s, cur_z_0)...
+                        + integralImg(index_x_1 - cur_s, index_y_1 - cur_s, cur_z_0);
+                end
+                
+                %                 b_1 = integralImg(getIndexInIntegral(x) + x_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1))...
+                %                     - integralImg(getIndexInIntegral(x)+x_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1))...
+                %                     - integralImg(getIndexInIntegral(x)+x_1{tree}(cur_node_id + 1) + s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1))...
+                %                     + integralImg(getIndexInIntegral(x)+x_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1),...
+                %                     getIndexInIntegral(y)+y_1{tree}(cur_node_id + 1) - s{tree}(cur_node_id + 1), z_1{tree}(cur_node_id + 1));
+                
+                cur_t = t{tree}(cur_node_id + 1);
+                cur_c_l = c_l{tree}(cur_node_id + 1);
+                cur_c_r = c_r{tree}(cur_node_id + 1);
+                % PROBLEM: tree 8's c_l(1) = 0; -> infinite loop
+                % decide whether to go to c_l or c_l
+                if (b_0 - b_1) < cur_t
+                    cur_node_id = cur_c_l;
+                else
+                    cur_node_id = cur_c_r;
+                end
+                
+                %check whether the next node < 1
+                if cur_node_id < 1
+                    cur_leaf_node =  abs(cur_node_id); % leaf node is reached
+                    cur_node_id = -1; % to exit while loop
                 end
             end %end of while loop
             
-        %leaf node is found
-        sum_px = sum_px + p_x{tree}(abs(cur_node_id) + 1);
-        sum_py = sum_py + p_y{tree}(abs(cur_node_id) + 1);
+            %leaf node is found; compute px and py
+            sum_px = sum_px + p_x{tree}(cur_leaf_node + 1);
+            sum_py = sum_py + p_y{tree}(cur_leaf_node + 1);
         end % end of tree loop
-        avg_px = sum_px/10;
-        avg_py = sum_py/10;
-        heat_map(x+avg_px, y+avg_py) = heat_map(x+avg_px, y+avg_py) + 1; 
+        avg_px = round(sum_px/10);
+        avg_py = round(sum_py/10);
+        if (x + avg_px > 0 && y+avg_py > 0 && x+avg_px <= size(heat_map,1) && y+avg_py <= size(heat_map,2))
+            heat_map(x+avg_px, y+avg_py) = min(255, heat_map(x+avg_px, y+avg_py) + 1);
+        end
     end % end of y loop
 end % end of x loop
-
+figure,imshow(heat_map);
