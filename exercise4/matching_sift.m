@@ -1,8 +1,8 @@
-Ia_orig = imread('test_shell1.jpg') ;
+Ia_orig = imread('test_pot1.jpg') ;
 Ia = im2single(rgb2gray(Ia_orig)) ;
 [fa,da] = vl_sift(Ia) ; 
 
-Ib_orig = imread('shell.jpg') ;
+Ib_orig = imread('pot.jpg') ;
 Ib = im2single(rgb2gray(Ib_orig)) ;
 [fb,db] = vl_sift(Ib) ;
 
