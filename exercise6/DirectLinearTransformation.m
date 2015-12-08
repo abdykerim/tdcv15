@@ -7,12 +7,14 @@ if (size(p1,1) ~= 3)
 end
 
 % Normalization
-[p1,t1] = Normalise2DPts(p1);
-[p2,t2] = Normalise2DPts(p2);
+[p1,t1] = normalize(p1);
+[p2,t2] = normalize(p2);
 
 x2 = p2(1,:);
 y2 = p2(2,:);
 z2 = p2(3,:);
+
+a = [];
 
 % Build A matrix
 for i=1:size(p1,2)

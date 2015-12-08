@@ -15,8 +15,13 @@ shift = size(obj_img, 2);
 
 x0 = f_obj(1,matches(1,:));
 y0 = f_obj(2,matches(1,:));
+x11 = f_scn(1,matches(2,:));
 x1 = f_scn(1,matches(2,:)) + shift;
 y1 = f_scn(2,matches(2,:));
+
+p1 = [x0;y0]; 
+p2 = [x11;y1];
+H = DirectLinearTransformation(p1, p2);
 
 imshow(display_img);
 hold on;
