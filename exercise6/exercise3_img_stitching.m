@@ -18,8 +18,23 @@ y0 = f_obj(2,matches(1,:));
 x1 = f_scn(1,matches(2,:)) + shift;
 y1 = f_scn(2,matches(2,:));
 
+
+% Make homogeneous coordinates
+
+obj_pts = [f_obj(1,matches(1,:));
+           f_obj(2,matches(1,:));
+           ones(1,size(matches(1,:), 2))];
+
+scn_pts = [f_scn(1,matches(2,:));
+           f_scn(2,matches(2,:));
+           ones(1,size(matches(2,:), 2))];
+
+% Find homogaphy transformation H
+
+H = dlt(obj_pts, scn_pts);
+
+
 imshow(display_img);
 hold on;
 h = line([x0 ; x1], [y0 ; y1]);
 axis image off;
-
