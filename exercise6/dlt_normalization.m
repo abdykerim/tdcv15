@@ -2,7 +2,7 @@ function [ norm_pts, T ] = dlt_normalization( pts )
 
 % Find centroid
 
-    c = [mean(pts(1,:)), mean(pts(2,:))]';
+    c = [mean(pts(1,:)), mean(pts(2,:))];
     
     translation = [1  0 -c(1); 0 1 -c(2); 0 0 1];
 

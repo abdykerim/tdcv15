@@ -1,3 +1,5 @@
+clear all;
+
 scn_img = imread('scene.pgm');
 obj_img = imread('box.pgm');
 
@@ -19,7 +21,7 @@ x1 = f_scn(1,matches(2,:)) + shift;
 y1 = f_scn(2,matches(2,:));
 
 
-% Make homogeneous coordinates
+% Make coordinates homogeneous
 
 obj_pts = [f_obj(1,matches(1,:));
            f_obj(2,matches(1,:));
@@ -28,15 +30,17 @@ obj_pts = [f_obj(1,matches(1,:));
 scn_pts = [f_scn(1,matches(2,:));
            f_scn(2,matches(2,:));
            ones(1,size(matches(2,:), 2))];
+       
 
 % Find homogaphy transformation H
 
-H = dlt(obj_pts, scn_pts);
+H = dlt(scn_pts, obj_pts);
+corrected_image = imwarp(scn_img, projective2d(H'));
+figure;
+imshow(corrected_image);
+
 
 Hr = ransac_homography(obj_pts, scn_pts, 10, 1, 4, 10);
-
-
-imshow(display_img);
-hold on;
-h = line([x0 ; x1], [y0 ; y1]);
-axis image off;
+ransacked = imwarp(scn_img, projective2d(Hr'));
+figure;
+imshow(ransacked);

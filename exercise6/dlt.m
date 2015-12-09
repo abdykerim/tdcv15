@@ -16,7 +16,7 @@ w = nrm_pt1(3,:);
 for i = 1:size(pts_0,2)
     A = [ A;
           zeros(3,1)'           -w(i)*nrm_pt0(:,i)'   y(i)*nrm_pt0(:,i)';
-          -w(i)*nrm_pt0(:,i)'   zeros(3,1)'           x(i)*nrm_pt0(:,i)'];
+          w(i)*nrm_pt0(:,i)'   zeros(3,1)'           -x(i)*nrm_pt0(:,i)'];
 end
 
 % solve for H
@@ -26,7 +26,8 @@ H = reshape( V(:,9), 3, 3 )';
 
 %denormalize
 
-H = T1\H*T0;
+H = (T1\H)*T0;
+H = H / H(3,3);
 
 end
 

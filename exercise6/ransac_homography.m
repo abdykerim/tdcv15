@@ -42,7 +42,7 @@ end
 
 % Re-estimate homography on the best sample
 
-H = dlt(best_sample(1:3,:), best_sample(4:6,:));
+H = dlt(best_sample(1:3,:), best_sample(4:6,:)); %%% Index exceeds matrix dimensions non deterministically!!!!
 
 end
 
