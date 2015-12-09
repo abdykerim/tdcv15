@@ -22,15 +22,23 @@ for j = 1 : N
     
     % Calculate distances
     
-    x0e = h * x1;
-    x1e = h \ x0;
+    x0e = h * x0;
+    x1e = h \ x1;
+    
+%     for i = 1:size(x0e, 2)
+%         x0e(:,i) = x0e(:,i)./x0e(3,i);
+%         x1e(:,i) = x1e(:,i)./x1e(3,i);
+%     end
+    
     dist = sum((x0 - x0e).^2 + (x1 - x1e).^2);
-    inliers = find(abs(dist) < t * 1.0e+05);
+    inliers = find(abs(dist) < t * 1.0e+04);
     
     % Update best sample
     
     if(size(inliers,2) > size(best_sample,2))
-        best_sample = sample(:,inliers);    
+        if(size(inliers,2) > T)
+            best_sample = sample(:,inliers);   
+        end
     end
     
     % Terminate when a sample good enough is found
