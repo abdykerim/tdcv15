@@ -26,7 +26,7 @@ H = reshape( V(:,9), 3, 3 )';
 
 %denormalize
 
-H = inv(T1) * H * T0;
+H = T1\H*T0;
 
 end
 

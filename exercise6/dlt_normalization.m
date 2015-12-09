@@ -22,5 +22,5 @@ function [ norm_pts, T ] = dlt_normalization( pts )
 
     norm_pts = T * pts;
 
-    end
+end
 

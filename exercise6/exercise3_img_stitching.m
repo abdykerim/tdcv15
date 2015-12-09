@@ -33,6 +33,8 @@ scn_pts = [f_scn(1,matches(2,:));
 
 H = dlt(obj_pts, scn_pts);
 
+Hr = ransac_homography(obj_pts, scn_pts, 10, 1, 4, 10);
+
 
 imshow(display_img);
 hold on;
