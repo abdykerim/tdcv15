@@ -1,7 +1,9 @@
-function H = ransac_homography( pts0, pts1, N, t, T, sample_size )
+function H = ransac_adaptive( pts0, pts1, t, sample_size )
 
 pts_size = size(pts0, 2);
 sample_count = 0;
+
+N = Inf;
 
 while N > sample_count
     
@@ -27,13 +29,14 @@ while N > sample_count
     x1 = sample(4:6,:);
     
     % Instantiate the model
+    
     h = dlt(x0, x1);
-        
-    % Estimate target points
+    
+    % Calculate distances
+    
     x1e = h * x0;
     x0e = h \ x1;
     
-    % Calculate distances
     for i = 1:size(x0e, 2)
         x0e(:,i) = x0e(:,i)./x0e(3,i);
         x1e(:,i) = x1e(:,i)./x1e(3,i);
@@ -42,20 +45,21 @@ while N > sample_count
     dist = sum((x0 - x0e).^2 + (x1 - x1e).^2);
     inliers = find(abs(dist) < t);
     
-    % Update best sample    
+    % Update best sample
+    
     if(size(inliers,2) > size(best_sample,2))
         best_sample = sample(:,inliers);
     end
+      
+    p = 0.99;
+    epsilon = 1 - size(inliers,2) / pts_size;
+    N = log(1 - p) / log(1-(1-epsilon)^sample_size);
+    sample_count = sample_count + 1;
     
-    % Terminate when a sample good enough is found    
-    if(size(best_sample,2) >= T)
-        break;
-    end
 end
 
-% Re-estimate homography on the best sample
-
-H = dlt(best_sample(1:3,:), best_sample(4:6,:)); %%% Index exceeds matrix dimensions non deterministically!!!!
+    % Re-estimate homography
+    H = dlt(sample(1:3,:), sample(4:6,:)); 
 
 end
 

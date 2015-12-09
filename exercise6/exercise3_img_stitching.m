@@ -34,15 +34,23 @@ scn_pts = [f_scn(1,matches(2,:));
 
 % Find homogaphy transformation H
 
-% H = dlt(scn_pts, obj_pts);
-% corrected_image = imwarp(scn_img, projective2d(H'));
-% figure;
-% imshow(corrected_image);
+H = dlt(scn_pts, obj_pts);
+corrected_image = imwarp(scn_img, projective2d(H'));
+figure('Name', 'DLT - 28 correspondences');
+imshow(corrected_image);
 
-for i=1:5
-    Hr = ransac_homography(scn_pts, obj_pts, 1000, 1, 4, 20);
-    Hr = dlt(scn_pts(:,1:14), obj_pts(:,1:14));
-    ransacked = imwarp(scn_img, projective2d(Hr'));
-    figure;
-    imshow(ransacked);
-end
+% Find homogaphy transformation with RANSAC
+
+Hr = ransac_homography(scn_pts, obj_pts, 10, 0.2, 8, 14);
+ransacked = imwarp(scn_img, projective2d(Hr'));
+figure('Name', 'RANSAC - manual parameters');
+imshow(ransacked);
+
+
+% Find homogaphy transformation with RANSAC using adaptive parameters
+
+Hr = ransac_adaptive(scn_pts, obj_pts, 0.2, 14);
+ransacked = imwarp(scn_img, projective2d(Hr'));
+figure('Name', 'RANSAC - adaptive parameters');
+imshow(ransacked);
+
