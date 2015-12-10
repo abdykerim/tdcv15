@@ -21,6 +21,11 @@ x1 = f_scn(1,matches(2,:)) + shift;
 y1 = f_scn(2,matches(2,:));
 
 
+figure(1),imshow(display_img);
+hold on;
+l = line([x0 ; x1], [y0 ; y1]);
+axis image off;
+
 % Make coordinates homogeneous
 
 obj_pts = [f_obj(1,matches(1,:));
@@ -50,7 +55,20 @@ imshow(ransacked);
 % Find homogaphy transformation with RANSAC using adaptive parameters
 
 Hr = ransac_adaptive(scn_pts, obj_pts, 0.2, 14);
-ransacked = imwarp(scn_img, projective2d(Hr'));
-figure('Name', 'RANSAC - adaptive parameters');
-imshow(ransacked);
+ransacked_adapt = imwarp(scn_img, projective2d(Hr'));
+% recalculate sift with the warped image and object to place the object in
+% the warped image with transparency
+[fa,da] = vl_sift(ransacked_adapt, 'PeakThresh', 0.02) ;
+[fb,db] = vl_sift(obj_img, 'PeakThresh', 0.02) ;
+[matches, scores] = vl_ubcmatch(da, db);
 
+xa  = fa(1,matches(1,:));
+ya  = fa(2,matches(1,:));
+
+finalx = mean(xa) - 185;
+finaly = mean(ya) - 110;
+figure('Name', 'RANSAC - adaptive parameters');
+imshow(ransacked_adapt);
+hold on;
+h = imagesc(finalx,finaly,obj_img);
+set(h, 'AlphaData', 0.3);
