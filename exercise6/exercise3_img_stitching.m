@@ -41,16 +41,41 @@ scn_pts = [f_scn(1,matches(2,:));
 
 H = dlt(scn_pts, obj_pts);
 corrected_image = imwarp(scn_img, projective2d(H'));
+% recalculate sift with the warped image and object to place the object in
+% the warped image with transparency
+[fa,da] = vl_sift(corrected_image, 'PeakThresh', 0.02) ;
+[fb,db] = vl_sift(obj_img, 'PeakThresh', 0.02) ;
+[matches, scores] = vl_ubcmatch(da, db);
+
+xa  = fa(1,matches(1,:));
+ya  = fa(2,matches(1,:));
+
+finalx = mean(xa) - 185;
+finaly = mean(ya) - 110;
 figure('Name', 'DLT - 28 correspondences');
 imshow(corrected_image);
-
+hold on;
+h = imagesc(finalx,finaly,obj_img);
+set(h, 'AlphaData', 0.3);
 % Find homogaphy transformation with RANSAC
 
 Hr = ransac_homography(scn_pts, obj_pts, 10, 0.2, 8, 14);
 ransacked = imwarp(scn_img, projective2d(Hr'));
+% recalculate sift with the warped image and object to place the object in
+% the warped image with transparency
+[fa,da] = vl_sift(ransacked, 'PeakThresh', 0.02) ;
+[matches, scores] = vl_ubcmatch(da, db);
+
+xa  = fa(1,matches(1,:));
+ya  = fa(2,matches(1,:));
+
+finalx = mean(xa) - 185;
+finaly = mean(ya) - 110;
 figure('Name', 'RANSAC - manual parameters');
 imshow(ransacked);
-
+hold on;
+h = imagesc(finalx,finaly,obj_img);
+set(h, 'AlphaData', 0.3);
 
 % Find homogaphy transformation with RANSAC using adaptive parameters
 
@@ -59,7 +84,6 @@ ransacked_adapt = imwarp(scn_img, projective2d(Hr'));
 % recalculate sift with the warped image and object to place the object in
 % the warped image with transparency
 [fa,da] = vl_sift(ransacked_adapt, 'PeakThresh', 0.02) ;
-[fb,db] = vl_sift(obj_img, 'PeakThresh', 0.02) ;
 [matches, scores] = vl_ubcmatch(da, db);
 
 xa  = fa(1,matches(1,:));
