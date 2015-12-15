@@ -1,27 +1,20 @@
-function H = ransac_homography( pts0, pts1, N, t, T, sample_size )
+function [H, best_sample] = ransac_homography( pts0, pts1, N, t, T, sample_size )
 
 pts_size = size(pts0, 2);
-sample_count = 0;
+sample_vector = [pts0(:,1:pts_size);pts1(:,1:pts_size)];
+try_count = 0;
 
-while N > sample_count
+sample_size = min(sample_size, pts_size);
+T = min(T, pts_size);
+
+% Initialize to minimal set of points
+rdm_idx = randperm(pts_size);
+best_sample = sample_vector(:,rdm_idx(:,1:4));
+
+while N > try_count && size(pts0, 2) > T
     
-    sample = zeros(6,sample_size);
-    picks = zeros(1,sample_size);
-    best_sample = [];
-    
-    % Select random sample 
-    for i = 1:sample_size
-        r = ceil((pts_size-i+1).*rand);
-        sample_vector = [pts0(:,r);pts1(:,r)];
-        
-        while(~isempty(find(picks == r)))
-            r = ceil((pts_size-i+1).*rand);
-            sample_vector = [pts0(:,r);pts1(:,r)];
-        end
-        
-        picks(i) = r;
-        sample(:,i) = sample_vector;
-    end
+    rdm_idx = randperm(pts_size);
+    sample = sample_vector(:,rdm_idx(:,1:sample_size));
     
     x0 = sample(1:3,:);
     x1 = sample(4:6,:);
@@ -42,7 +35,7 @@ while N > sample_count
     dist = sum((x0 - x0e).^2 + (x1 - x1e).^2);
     inliers = find(abs(dist) < t);
     
-    % Update best sample    
+    % Update best sample
     if(size(inliers,2) > size(best_sample,2))
         best_sample = sample(:,inliers);
     end
@@ -51,11 +44,12 @@ while N > sample_count
     if(size(best_sample,2) >= T)
         break;
     end
+    try_count = try_count + 1;
 end
 
 % Re-estimate homography on the best sample
 
-H = dlt(best_sample(1:3,:), best_sample(4:6,:)); %%% Index exceeds matrix dimensions non deterministically!!!!
+H = dlt(best_sample(1:3,:), best_sample(4:6,:)); 
 
 end
 

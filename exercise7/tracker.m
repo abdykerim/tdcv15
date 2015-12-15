@@ -23,8 +23,6 @@ m_0 = [f_0(1:2,:); ones(1, size(f_0, 2))];
 M_0 = A \ m_0;
 
 fig = figure('Visible','off');
-v = VideoWriter(fullfile(outpath, 'matcher.avi'),'Uncompressed AVI');
-open(v);
 
 % find correspondences
 for i=1:44
@@ -33,25 +31,41 @@ for i=1:44
     
     I_t = im2single(rgb2gray(imread([imgpath imname])));
     [f_t, d_t] = vl_sift(I_t, 'PeakThresh', 0.03, 'EdgeThresh', 2);
-    [matches, scores] = vl_ubcmatch(d_0, d_t, 15);
+    [matches, scores] = vl_ubcmatch(d_0, d_t, 5);    
         
     display_img = padarray(I_0, [0 size(I_t, 2)], 'pre');
     display_img(1:size(I_t, 1), 1:size(I_t, 2)) = I_t;
     
-    f_o = bsxfun(@plus,f_0,[size(I_t, 2) 0 0 0]');    
-    matches_x = [f_o(1,matches(1,:)); f_t(1,matches(2,:))];
-    matches_y = [f_o(2,matches(1,:)); f_t(2,matches(2,:))];
+    if(size(matches, 2) < 4)
+        imshow(display_img);
+        saveas(fig, fullfile(outpath, imname), 'jpg');
+        continue;
+    end
+    
+    obj_pts = [f_0(1,matches(1,:));
+           f_0(2,matches(1,:));
+           ones(1,size(matches(1,:), 2))];
+
+    scn_pts = [f_t(1,matches(2,:));
+           f_t(2,matches(2,:));
+           ones(1,size(matches(2,:), 2))];
+    
+    [Hr, best_sample] = ransac_homography(scn_pts, obj_pts, 10, 0.2, 6, 20);
+    
+    f_o = bsxfun(@plus,f_0,[size(I_t, 2) 0 0 0]');
+    r_matches_x_t = bsxfun(@plus,best_sample(4,:),size(I_t, 2));
+    
+    r_matches_x = [best_sample(1,:); r_matches_x_t];
+    r_matches_y = [best_sample(2,:); best_sample(5,:)];
     
     imshow(display_img);
     set(vl_plotframe(f_o),'color','g', 'linewidth', 1);
     set(vl_plotframe(f_t),'color','y', 'linewidth', 1);
-    set(line(matches_x, matches_y),'color',[1 0.5 0.2]);
+    set(line(r_matches_x, r_matches_y),'color',[1 0.5 0.2]);
     
     saveas(fig, fullfile(outpath, imname), 'jpg');
-    writeVideo(v, getframe(fig));
 end
 
-close(v);
 
 
 
