@@ -68,15 +68,16 @@ for i=1:44
     saveas(fig, fullfile(outpath, imname), 'jpg');
     
     %calculating the camera position
-    % TODO: must be something wrong here, since fminsearch always produces 0
     m_i = double(best_sample(1:3,:));
+    m_0_2 = double(best_sample(4:6,:));
     inliers{i} = m_i;
-    %I am recalculating M_i since we have less points than M_0, so we cannot
-    %use M_0
-    M_i = A \ m_i;
-    M_i_h = double([M_i; ones(1,size(M_i,2))]);
-    g = @(p) energy(A,p(1), p(2),p(3), p(4),p(5),p(6), M_i_h,m_i);
-    %TODO: this gives 0 at the moment
+    %I am recalculating M_0 since we need the same number of points as in
+    %m_i
+    M_0_2 = A \ m_0_2;
+    M_0_h = double([M_0_2; ones(1,size(M_0_2,2))]);
+    g = @(p) energy(A,p(1), p(2),p(3), p(4), p(5), p(6), M_0_h, m_i);
+    %TODO: but this gives not really nice result, maybe something is
+    %missing: normalization, or we need more points to estimate camera pos
     res_min = fminsearch(g, initVal);
     initVal = res_min;
     
