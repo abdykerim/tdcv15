@@ -49,23 +49,14 @@ classdef WeakClassifier < handle
             
             epsilon = obj.err / sum(obj.w);           % normalize the error
             obj.alpha = log((1-epsilon) / epsilon);
-            weights = obj.w;
-            weights(obj.miss) = obj.w(obj.miss) .* exp(obj.alpha)*2;
+            weights = obj.w .* exp(obj.alpha * obj.miss');
             weights = weights ./ sum(weights);        % normalize weights
         end
         
         function [] = fit_axis(obj, data, axis)
                    
             sorted = sort(data(:,axis));
-            
-            [e, misses] = obj.error(data(:,axis), min(data(:,axis)) - 1);
-            if(e < obj.err)
-                obj.axis = axis;
-                obj.err = e;
-                obj.t = -Inf;
-                obj.miss = misses;
-            end
-            
+                        
             for i = 1:size(sorted)-1
                 tr = (sorted(i+1) + sorted(i)) / 2;
                 [e, misses] = obj.error(data(:,axis), tr);
@@ -75,14 +66,6 @@ classdef WeakClassifier < handle
                     obj.t = tr;
                     obj.miss = misses;
                 end
-            end
-            
-            [e, misses] = obj.error(data(:,axis), max(data(:,axis))+1);
-            if(e < obj.err)
-                obj.axis = axis;
-                obj.err = e;
-                obj.t = Inf;
-                obj.miss = misses;
             end
         end
         

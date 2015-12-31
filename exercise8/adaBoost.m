@@ -9,15 +9,15 @@ data3 = load('ex08\data3.mat');
 
 
 ada = AdaboostClassifier(N);
-ada.Train(data1.dat(1:300,1:2), data1.dat(1:300,3));
-test_labels = ada.Test(data1.dat(1:300,1:2));
+ada.Train(data1.dat(:,1:2), data1.dat(:,3));
+test_labels = ada.Test(data1.dat(:,1:2));
 
-ada.Plot(data1.dat(1:300,1:2), data1.dat(1:300,3));
-ada.Plot(data1.dat(1:300,1:2), test_labels);
+ada.Plot(data1.dat(:,1:2), data1.dat(:,3));
+ada.Plot(data1.dat(:,1:2), test_labels);
 
 
 
-% ada = AdaboostClassifier(N);
+%% ada = AdaboostClassifier(N);
 % ada.Train(data2.dat(:,1:2), data2.dat(:,3));
 % test_labels = ada.Test(data2.dat(:,1:2));
 % 
@@ -32,3 +32,4 @@ ada.Plot(data1.dat(1:300,1:2), test_labels);
 % 
 % ada.Plot(data3.dat(:,1:2), data3.dat(:,3));
 % ada.Plot(data3.dat(:,1:2), test_labels);
+%%

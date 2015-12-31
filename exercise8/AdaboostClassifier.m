@@ -30,7 +30,7 @@ classdef AdaboostClassifier < handle
                         
             for i = 1:size(obj.classifiers,2)
                 pred_data = obj.classifiers{i}.Test(testingSet);
-                prediction = prediction + obj.classifiers{i}.alpha * pred_data(:,3);
+                prediction = prediction + obj.classifiers{i}.alpha * (pred_data(:,3));
             end
             prediction = sign(prediction);
         end
@@ -63,8 +63,8 @@ classdef AdaboostClassifier < handle
             weights_left = weights(labels < 0);
             plot_right = dataset(labels >= 0,:);
             weights_right = weights(labels >= 0);
-            scatter(plot_left(:,1), plot_left(:,2), 50000*weights_left, 'r', 'o');
-            scatter(plot_right(:,1), plot_right(:,2), 50000*weights_right, 'b', 'x');            
+            scatter(plot_left(:,1), plot_left(:,2), 8000*weights_left, 'r', 'o');
+            scatter(plot_right(:,1), plot_right(:,2), 8000*weights_right, 'b', 'x');            
             
             hold off;
         end
