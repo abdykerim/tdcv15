@@ -63,8 +63,8 @@ classdef AdaboostClassifier < handle
             weights_left = weights(labels < 0);
             plot_right = dataset(labels >= 0,:);
             weights_right = weights(labels >= 0);
-            scatter(plot_left(:,1), plot_left(:,2), 8000*weights_left, 'r', 'o');
-            scatter(plot_right(:,1), plot_right(:,2), 8000*weights_right, 'b', 'x');            
+            scatter(plot_left(:,1), plot_left(:,2), 8000*weights_left, 'b', 'x'); % r o
+            scatter(plot_right(:,1), plot_right(:,2), 8000*weights_right, 'r', 'o'); % b x         
             
             hold off;
         end

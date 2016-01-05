@@ -16,10 +16,12 @@ classdef WeakClassifier < handle
         function obj = WeakClassifier(dataset, labels, weights)
             
             obj.data = dataset(:,1:2);
-            obj.t = -Inf;
+            obj.t = -Inf; % how do you come up with this value?
             obj.labels = labels;
-            obj.err = Inf;
+            obj.err = Inf; % how do you come up with this value?
             
+            %TODO: but it says weights = 1/N in the beginning, why do you give
+            %them different weights based on the label (sign)?
             if(isempty(weights))
                 right_idx = obj.labels == 1;
                 left_idx = obj.labels == -1;
