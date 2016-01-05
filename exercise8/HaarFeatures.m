@@ -12,27 +12,26 @@ classdef HaarFeatures
         function obj = HaarFeatures(classifiers)
             %positions
             obj.n = size(classifiers,2);
-            n = obj.n; %first I wrote n, then added obj.n ,was lazy to change all the lines below
-            obj.featuresPositions.r = zeros(n, 1);
-            obj.featuresPositions.c = zeros(n, 1);
-            obj.featuresPositions.winWidth = zeros(n, 1);
-            obj.featuresPositions.winHeight = zeros(n, 1);
+            obj.featuresPositions.r = zeros(obj.n, 1);
+            obj.featuresPositions.c = zeros(obj.n, 1);
+            obj.featuresPositions.winWidth = zeros(obj.n, 1);
+            obj.featuresPositions.winHeight = zeros(obj.n, 1);
             
-            obj.featuresType = zeros(n, 1);
+            obj.featuresType = zeros(obj.n, 1);
             
-            obj.featuresAttributes.mean = zeros(n, 1);
-            obj.featuresAttributes.std_deviation = zeros(n, 1);
-            obj.featuresAttributes.maxPos = zeros(n, 1);
-            obj.featuresAttributes.minPos = zeros(n, 1);
-            obj.featuresAttributes.R = zeros(n, 1);
-            obj.featuresAttributes.alpha = zeros(n, 1);
-            obj.featuresAttributes.error = zeros(n, 1);
-            obj.featuresAttributes.false_negative_error = zeros(n, 1);
-            obj.featuresAttributes.false_positive_error = zeros(n, 1);
-            obj.featuresAttributes.min_t = zeros(n, 1);
-            obj.featuresAttributes.max_t = zeros(n, 1);
+            obj.featuresAttributes.mean = zeros(obj.n, 1);
+            obj.featuresAttributes.std_deviation = zeros(obj.n, 1);
+            obj.featuresAttributes.maxPos = zeros(obj.n, 1);
+            obj.featuresAttributes.minPos = zeros(obj.n, 1);
+            obj.featuresAttributes.R = zeros(obj.n, 1);
+            obj.featuresAttributes.alpha = zeros(obj.n, 1);
+            obj.featuresAttributes.error = zeros(obj.n, 1);
+            obj.featuresAttributes.false_negative_error = zeros(obj.n, 1);
+            obj.featuresAttributes.false_positive_error = zeros(obj.n, 1);
+            obj.featuresAttributes.min_t = zeros(obj.n, 1);
+            obj.featuresAttributes.max_t = zeros(obj.n, 1);
             
-            for i = 1:n
+            for i = 1:obj.n
                 obj.featuresPositions.r(i) = classifiers(1, i);
                 obj.featuresPositions.c(i) = classifiers(2, i);
                 obj.featuresPositions.winWidth(i) = classifiers(3, i);
@@ -84,11 +83,17 @@ classdef HaarFeatures
             w = feature_pos(3);
             h = feature_pos(4);
             
-            %TODO: I am not sure if rect_value calculation is correct,
+            % TODO: I am not sure if rect_value calculation is correct,
             % shouldn't response give 1 value, not vector?
+            
+            % The coordinate pair must be passed explicitly and not as a
+            % vector. This is a minor adjustment in a well known formula
+            % that shouldn't be stopping us. It is returning a scalar now. 
             rect_value = @(coords) ...
-                obj.ii(coords(4,:)) + obj.ii(coords(1,:)) - ...
-                (obj.ii(coords(2,:)) + obj.ii(coords(3,:)));
+                obj.ii(coords(4,1), coords(4,2)) + ...
+                obj.ii(coords(1,1), coords(1,2)) - ...
+               (obj.ii(coords(2,1), coords(2,2)) + ...
+                obj.ii(coords(3,1), coords(3,2)));
             
 
             switch feat_type
