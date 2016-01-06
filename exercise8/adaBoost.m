@@ -3,14 +3,17 @@ close all;
 N = 30; % number of weak classifiers
 
 data1 = load('ex08\data1.mat');
+
 % Visualize the data samples before the classification
 PlotSimple(data1.dat(:,1:2), data1.dat(:,3));
+
+
 ada1 = AdaboostClassifier(N);
 ada1.Train(data1.dat(:,1:2), data1.dat(:,3));
 test_labels1 = ada1.Test(data1.dat(:,1:2));
 
 % Visualize the data samples after the classification (first Plot or second?)
-ada1.Plot(data1.dat(:,1:2), data1.dat(:,3));
+% ada1.Plot(data1.dat(:,1:2), data1.dat(:,3));
 ada1.Plot(data1.dat(:,1:2), test_labels1);
 
 
