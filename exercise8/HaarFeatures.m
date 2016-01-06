@@ -10,7 +10,9 @@ classdef HaarFeatures
     
     methods
         function obj = HaarFeatures(classifiers)
+            
             %positions
+            
             obj.n = size(classifiers,2);
             obj.featuresPositions.r = zeros(obj.n, 1);
             obj.featuresPositions.c = zeros(obj.n, 1);
@@ -57,6 +59,7 @@ classdef HaarFeatures
             end
             
         end
+        
         function response = HaarFeaturesCompute(obj, gray_img)
             %padded with zeros on left and top
             obj.ii = integralImage(double(gray_img));
@@ -93,8 +96,7 @@ classdef HaarFeatures
                 obj.ii(coords(4,1), coords(4,2)) + ...
                 obj.ii(coords(1,1), coords(1,2)) - ...
                (obj.ii(coords(2,1), coords(2,2)) + ...
-                obj.ii(coords(3,1), coords(3,2)));
-            
+                obj.ii(coords(3,1), coords(3,2)));            
 
             switch feat_type
                 case 1
