@@ -4,7 +4,7 @@ classdef HaarFeatures
         featuresPositions;
         featuresType;
         featuresAttributes;
-        ii; %integral image
+        ii; % integral image
         n;
     end
     
@@ -61,7 +61,9 @@ classdef HaarFeatures
         end
         
         function response = HaarFeaturesCompute(obj, gray_img)
+            
             %padded with zeros on left and top
+            
             obj.ii = integralImage(double(gray_img));
             
             response = cell(1, obj.n);
@@ -85,13 +87,7 @@ classdef HaarFeatures
             c = feature_pos(2);
             w = feature_pos(3);
             h = feature_pos(4);
-            
-            % TODO: I am not sure if rect_value calculation is correct,
-            % shouldn't response give 1 value, not vector?
-            
-            % The coordinate pair must be passed explicitly and not as a
-            % vector. This is a minor adjustment in a well known formula
-            % that shouldn't be stopping us. It is returning a scalar now. 
+             
             rect_value = @(coords) ...
                 obj.ii(coords(4,1), coords(4,2)) + ...
                 obj.ii(coords(1,1), coords(1,2)) - ...

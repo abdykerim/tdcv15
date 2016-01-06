@@ -17,36 +17,9 @@ classdef WeakClassifier < handle
             
             obj.data = dataset(:,1:2);
             obj.labels = labels;
-            
-            % how do you come up with this value?
-            
-            % We are trying to minimize the error with the simple method of 
-            % a "less than" comparison of the current value over iterations.
-            % So Inf looks like a fair value to ensure that we are not passing
-            % by any error as big as it might be.
             obj.err = Inf;
-            
-            % how do you come up with this value?
-            
-            % We are minimizing the error by swaping a threshold across the
-            % data that is parallel to one of the axis. It goes in
-            % assendending order and is allways updated since there is
-            % allways one that minimizes the error function. This is just
-            % the least possible one. If you see an -Inf valued threshold
-            % in the trained classifier then there's bug, but it hasn't
-            % happend to me so far. 
             obj.t = -Inf;
             
-            % TODO: but it says weights = 1/N in the beginning, why do you give
-            % them different weights based on the label (sign)?
-            
-            % If take a look at the algorithm in the paper you will see this
-            % initialization. If you notice also that in the test data the
-            % amount of 1 and -1 labeled data are equal you will see that 
-            % this end up precisely with weight values of 1/N so this is not 
-            % affecting the results.
-            % I began directly assigning 1/N values and then tried this to
-            % see whether it improves the classification.
             if(isempty(weights))
                 right_idx = obj.labels == 1;
                 left_idx = obj.labels == -1;
