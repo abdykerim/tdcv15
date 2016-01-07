@@ -35,8 +35,8 @@ classdef AdaboostClassifier < handle
             prediction = sign(prediction);
         end
         
-        function [] = Plot(obj, dataset, labels)
-            figure;
+        function [] = Plot(obj, dataset, labels, show_weights, show_thresholds)
+            
             hold on;
             
             max_x = max(dataset(:,1));
@@ -46,25 +46,33 @@ classdef AdaboostClassifier < handle
             
             % Plot Thresholds
             
-            for i = 1:size(obj.classifiers,2)
-                wc = obj.classifiers{i};
-                if(wc.axis == 1)
-                    line([wc.t, wc.t], [min_x, max_x]);
-                else
-                    line([min_y, max_y], [wc.t, wc.t]);
+            if(show_thresholds)
+                for i = 1:size(obj.classifiers,2)
+                    wc = obj.classifiers{i};
+                    if(wc.axis == 1)
+                        line([wc.t, wc.t], [min_x, max_x]);
+                    else
+                        line([min_y, max_y], [wc.t, wc.t]);
+                    end
                 end
-            end            
+            end
             
             % Plot predictions
             
-            weights = wc.w;
+            weights = obj.classifiers{end}.w;
             
             plot_left = dataset(labels < 0,:);
             weights_left = weights(labels < 0);
             plot_right = dataset(labels >= 0,:);
             weights_right = weights(labels >= 0);
-            scatter(plot_left(:,1), plot_left(:,2), 8000*weights_left, 'b', 'x'); % r o
-            scatter(plot_right(:,1), plot_right(:,2), 8000*weights_right, 'r', 'o'); % b x         
+            
+            if(show_weights)
+                scatter(plot_left(:,1), plot_left(:,2), 10000*weights_left, 'b', '+');
+                scatter(plot_right(:,1), plot_right(:,2), 10000*weights_right, 'r', 'o');
+            else
+                scatter(plot_left(:,1), plot_left(:,2), 10, 'b', '+');
+                scatter(plot_right(:,1), plot_right(:,2), 10, 'r', 'o');
+            end
             
             hold off;
         end
