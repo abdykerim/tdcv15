@@ -19,4 +19,5 @@ t_coords = [180, 230; 280, 230; 180, 330; 280, 330];
 A = cell (1,10);
 for i = 1:10
     A{i} = computeA(img, t_coords, i);
+    i
 end
