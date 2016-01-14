@@ -22,13 +22,17 @@ classdef AdaboostClassifier < handle
             end
         end
         
-        function [prediction] = Test(obj, testingSet)
+        function [prediction] = Test(obj, testingSet, iterations)
+            
+            if(iterations > size(obj.classifiers,2))
+               iterations = size(obj.classifiers,2);
+            end
             
             prediction = zeros(size(testingSet,1),1);
             
             % compute the weighted sum of each classifier response
                         
-            for i = 1:size(obj.classifiers,2)
+            for i = 1:iterations
                 pred_data = obj.classifiers{i}.Test(testingSet);
                 prediction = prediction + obj.classifiers{i}.alpha * (pred_data(:,3));
             end
@@ -67,8 +71,8 @@ classdef AdaboostClassifier < handle
             weights_right = weights(labels >= 0);
             
             if(show_weights)
-                scatter(plot_left(:,1), plot_left(:,2), 10000*weights_left, 'b', '+');
-                scatter(plot_right(:,1), plot_right(:,2), 10000*weights_right, 'r', 'o');
+                scatter(plot_left(:,1), plot_left(:,2), 20000*weights_left, 'b', '+');
+                scatter(plot_right(:,1), plot_right(:,2), 20000*weights_right, 'r', 'o');
             else
                 scatter(plot_left(:,1), plot_left(:,2), 10, 'b', '+');
                 scatter(plot_right(:,1), plot_right(:,2), 10, 'r', 'o');

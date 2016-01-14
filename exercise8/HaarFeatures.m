@@ -100,7 +100,9 @@ classdef HaarFeatures
                     for j=1:wn
                         feature_pos = [r+i-1 c+j-1 w h];
                         response = FeatureResponse(obj, feat_type, feature_pos);
-                        if (response <= obj.featuresAttributes.max_t(f) && ...
+                        if response == 0
+                            resp(i,j) = 0;
+                        elseif (response <= obj.featuresAttributes.max_t(f) && ...
                             response >= obj.featuresAttributes.min_t(f))
                             resp(i,j) = obj.featuresAttributes.alpha(f);
                         else
