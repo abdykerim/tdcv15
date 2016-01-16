@@ -1,22 +1,23 @@
-for i = 1:1
-    imname = ['seq\im' sprintf('%03d',i-1) '.pgm'];
-    img = imread(imname);
-%     figure(1), imshow(img);    
-    
-%      outname = ['out\im' sprintf('%03d',i-1) '.pgm'];
-%     img2 = imread(outname);
-%      figure(2), imshow(img2);  
-%     i
-end
+clear all;
+close all;
+img = imread('seq\im000.pgm');
 
 % figure, imshow(img);
 % hold on;
-% plot(180,230,'r.','MarkerSize',20); 
-% plot(280,230,'r.','MarkerSize',20); 
-% plot(180,330,'r.','MarkerSize',20); 
-% plot(280,330,'r.','MarkerSize',20);
-t_coords = [180, 230; 280, 230; 180, 330; 280, 330];
+% % x-y plotting
+% plot(250, 280,'r.','MarkerSize',20); % top left
+% plot(350, 280,'r.','MarkerSize',20); %top right
+% plot(250, 380,'r.','MarkerSize',20); %bottom left
+% plot(350, 380,'r.','MarkerSize',20); %bottom right
+
+% Template must be 100x100!
+%y-x coords
+t_coords = [280, 250; 280, 350; 380, 250; 380, 350];
 A = cell (1,10);
+range = 30;
 for i = 1:10
-    A{i} = computeA(img, t_coords, i);
+    A{i} = computeA(img, t_coords, range);
+    i
+    range = range - 3;
 end
+save updateMatrices.mat A;
