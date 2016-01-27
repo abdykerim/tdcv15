@@ -23,8 +23,9 @@ function [img_SSD,img_NCC] = ssd_ncc_gray(T, I)
 % Calculate correlation output size  = input size + padding template
 T_size = size(T); I_size = size(I);
 outsize = I_size + T_size-1;
+
+% SSD, 1st way with manual fft computation without imfilter, fastest
 tic;
-% SSD
 % calculate correlation in frequency domain
 FT = fft2(rot90(T,2), outsize(1), outsize(2));
 FI = fft2(I, outsize(1), outsize(2));
@@ -34,49 +35,47 @@ Icorr = real(ifft2(FI.* FT));
 localQSumI = local_sum(I.*I, T_size);
 QSumT = sum(T(:).^2);
 
-% SSD between template and image
 % SSD = I^2 + T^2 - 2*C(I,T), it is much faster than direct
 % application of the formula in the exercise pdf
 img_SSD = localQSumI+QSumT-2*Icorr;
 
 % Normalize to range 0..1
-img_SSD = img_SSD-min(img_SSD(:));
-img_SSD = 1-(img_SSD./max(img_SSD(:)));
+img_SSD = (img_SSD-min(img_SSD(:)))./(max(img_SSD(:))-min(img_SSD(:)));
+img_SSD = 1 - img_SSD; % need to invert
 
 % Remove padding
 img_SSD = unpadarray(img_SSD, size(I));
 toc
 
-tic;
+% %SSD 2nd way, using imfilter (4 times slower than manual fft computation above)
+% % SSD
+% tic;
+% Icorr2 = imfilter(I, T, 'corr');
+% 
+% % Calculate Local Quadratic sum of Image and Template
+% localQSumI = local_sum(I.*I, T_size);
+% %remove padding
+% localQSumI = unpadarray(localQSumI, size(I));
+% QSumT = sum(T(:).^2);
+% 
+% % SSD = I^2 + T^2 - 2*C(I,T), it is much faster than direct
+% % application of the formula in the exercise pdf
+% img_SSD = localQSumI+QSumT-2*Icorr2;
+% % Normalize to range 0..1
+% img_SSD = (img_SSD-min(img_SSD(:)))./(max(img_SSD(:))-min(img_SSD(:)));
+% img_SSD = 1 - img_SSD; % need to invert
+% toc
+
+
 % NCC
+tic;
 %normalizing
 T_norm = normalize(T);
 I_norm = normalize(I);
 
-% % C(I_norm,T_norm)
-% % fast and correct, need to check, there might be bugs
-% FT2 = fft2(rot90(T_norm,2), outsize(1), outsize(2));
-% FI2 = fft2(I_norm, outsize(1), outsize(2));
-% img_NCC = real(ifft2(FI2.* FT2));
-
-% very slow! directly formula from exercise pdf
-img_NCC = correlate( T_norm, I_norm );
-img_NCC = normalize(img_NCC);
-
-% % from web, I don't completely understand what's happening, but very fast
-% % and correct
-% % % % % % Normalized cross correlation STD
-% % % % % LocalSumI = local_sum(I_norm, T_size);
-% % % % %
-% % % % % % Standard deviation
-% % % % % stdI = sqrt(max(localQSumI-(LocalSumI.^2)/numel(T),0) );
-% % % % % stdT = sqrt(numel(T)-1)*std(T(:));
-% % % % %
-% % % % % % Mean compensation
-% % % % % meanIT = LocalSumI*sum(T(:))/numel(T);
-% % % % % img_NCC= 0.5+(Icorr-meanIT)./ (2*stdT*max(stdI,stdT/1e5));
-% Remove padding
-img_NCC = unpadarray(img_NCC, size(I));
+img_NCC = imfilter(I_norm, T_norm, 'corr');
+%ranging from 0 to 1
+img_NCC = (img_NCC-min(img_NCC(:)))./(max(img_NCC(:))-min(img_NCC(:)));
 toc
 end
 
