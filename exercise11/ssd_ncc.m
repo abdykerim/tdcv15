@@ -1,7 +1,7 @@
 function [img_SSD,img_NCC]=ssd_ncc(T, I)
 
 if(size(T,3)==3)
-    % Color Image detected
+    % Color Image
     [img_SSD,img_NCC] = ssd_ncc_color(T, I);
 else
     % Grayscale image
@@ -23,7 +23,7 @@ function [img_SSD,img_NCC] = ssd_ncc_gray(T, I)
 % Calculate correlation output size  = input size + padding template
 T_size = size(T); I_size = size(I);
 outsize = I_size + T_size-1;
-
+tic;
 % SSD
 % calculate correlation in frequency domain
 FT = fft2(rot90(T,2), outsize(1), outsize(2));
@@ -35,7 +35,8 @@ localQSumI = local_sum(I.*I, T_size);
 QSumT = sum(T(:).^2);
 
 % SSD between template and image
-% SSD = I^2 + T^2 - 2*C(I,T) in the region
+% SSD = I^2 + T^2 - 2*C(I,T), it is much faster than direct
+% application of the formula in the exercise pdf
 img_SSD = localQSumI+QSumT-2*Icorr;
 
 % Normalize to range 0..1
@@ -44,17 +45,26 @@ img_SSD = 1-(img_SSD./max(img_SSD(:)));
 
 % Remove padding
 img_SSD = unpadarray(img_SSD, size(I));
+toc
 
+tic;
 % NCC
 %normalizing
 T_norm = normalize(T);
 I_norm = normalize(I);
 
-% C(I_norm,T_norm)
-FT2 = fft2(rot90(T_norm,2), outsize(1), outsize(2));
-FI2 = fft2(I_norm, outsize(1), outsize(2));
-img_NCC = real(ifft2(FI2.* FT2));
+% % C(I_norm,T_norm)
+% % fast and correct, need to check, there might be bugs
+% FT2 = fft2(rot90(T_norm,2), outsize(1), outsize(2));
+% FI2 = fft2(I_norm, outsize(1), outsize(2));
+% img_NCC = real(ifft2(FI2.* FT2));
 
+% very slow! directly formula from exercise pdf
+img_NCC = correlate( T_norm, I_norm );
+img_NCC = normalize(img_NCC);
+
+% % from web, I don't completely understand what's happening, but very fast
+% % and correct
 % % % % % % Normalized cross correlation STD
 % % % % % LocalSumI = local_sum(I_norm, T_size);
 % % % % %
@@ -67,6 +77,7 @@ img_NCC = real(ifft2(FI2.* FT2));
 % % % % % img_NCC= 0.5+(Icorr-meanIT)./ (2*stdT*max(stdI,stdT/1e5));
 % Remove padding
 img_NCC = unpadarray(img_NCC, size(I));
+toc
 end
 
 function local_sum_I = local_sum(I, T_size)
