@@ -25,4 +25,5 @@ gmag = (gmag-min(gmag(:)))./(max(gmag(:))-min(gmag(:)));
 gdir = (gdir-min(gdir(:)))./(max(gdir(:))-min(gdir(:)));
 %thresholding
 gmag (find(gmag < treshold)) = 0;
+gdir (find(gdir < treshold)) = 0;
 end
