@@ -25,7 +25,6 @@ T_size = size(T); I_size = size(I);
 outsize = I_size + T_size-1;
 
 % SSD, 1st way with manual fft computation without imfilter, fastest
-tic;
 % calculate correlation in frequency domain
 FT = fft2(rot90(T,2), outsize(1), outsize(2));
 FI = fft2(I, outsize(1), outsize(2));
@@ -45,11 +44,9 @@ img_SSD = 1 - img_SSD; % need to invert
 
 % Remove padding
 img_SSD = unpadarray(img_SSD, size(I));
-toc
 
 % %SSD 2nd way, using imfilter (4 times slower than manual fft computation above)
 % % SSD
-% tic;
 % Icorr2 = imfilter(I, T, 'corr');
 % 
 % % Calculate Local Quadratic sum of Image and Template
@@ -64,11 +61,9 @@ toc
 % % Normalize to range 0..1
 % img_SSD = (img_SSD-min(img_SSD(:)))./(max(img_SSD(:))-min(img_SSD(:)));
 % img_SSD = 1 - img_SSD; % need to invert
-% toc
 
 
 % NCC
-tic;
 %normalizing
 T_norm = normalize(T);
 I_norm = normalize(I);
@@ -76,7 +71,6 @@ I_norm = normalize(I);
 img_NCC = imfilter(I_norm, T_norm, 'corr');
 %ranging from 0 to 1
 img_NCC = (img_NCC-min(img_NCC(:)))./(max(img_NCC(:))-min(img_NCC(:)));
-toc
 end
 
 function local_sum_I = local_sum(I, T_size)
